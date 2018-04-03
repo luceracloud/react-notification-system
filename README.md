@@ -1,6 +1,6 @@
 # React Notification System
 
-[![npm version](https://badge.fury.io/js/react-notification-system.svg)](http://badge.fury.io/js/react-notification-system) [![npm](https://img.shields.io/npm/dm/react-notification-system.svg)](https://www.npmjs.com/package/react-notification-system) [![Dependency Status](https://david-dm.org/igorprado/react-notification-system.svg)](https://david-dm.org/igorprado/react-notification-system) [![devDependency Status](https://david-dm.org/igorprado/react-notification-system/dev-status.svg)](https://david-dm.org/igorprado/react-notification-system#info=devDependencies) [![Build Status](https://travis-ci.org/igorprado/react-notification-system.svg)](https://travis-ci.org/igorprado/react-notification-system) [![Coverage Status](https://coveralls.io/repos/igorprado/react-notification-system/badge.svg?branch=master&service=github)](https://coveralls.io/github/igorprado/react-notification-system?branch=master)
+[![npm version](https://badge.fury.io/js/react-notification-system.svg)](http://badge.fury.io/js/react-notification-system) [![npm](https://img.shields.io/npm/dm/react-notification-system.svg)](https://www.npmjs.com/package/react-notification-system) [![Dependency Status](https://david-dm.org/igorprado/react-notification-system.svg)](https://david-dm.org/igorprado/react-notification-system) [![devDependency Status](https://david-dm.org/igorprado/react-notification-system/dev-status.svg)](https://david-dm.org/igorprado/react-notification-system#info=devDependencies) [![Build Status](https://travis-ci.org/igorprado/react-notification-system.svg?branch=master)](https://travis-ci.org/igorprado/react-notification-system) [![Coverage Status](https://coveralls.io/repos/igorprado/react-notification-system/badge.svg?branch=master&service=github)](https://coveralls.io/github/igorprado/react-notification-system?branch=master)
 
 > A complete and totally customizable component for notifications in React.
 
@@ -10,7 +10,7 @@ _Initially built for [Eterpret](http://dev.eterpret.com) @ [Scalable Path](http:
 
 ## Installing
 
-For now this component is only available as CommonJS module. Install via NPM running:
+This component is available as CommonJS and UMD module. Install via NPM running:
 
 ```
 npm install react-notification-system
@@ -84,7 +84,17 @@ Returns the notification object to be used to programmatically dismiss a notific
 
 ### `removeNotification(notification)`
 
-Remove programmatically a notification. You can pass an object returned by `addNotification()` or by `onAdd()` callback. If passing an object, you need to make sure it must contain the `uid` property. You can pass only the `uid` too: `removeNotification(uid)`.
+Remove a notification programmatically. You can pass an object returned by `addNotification()` or by `onAdd()` callback. If passing an object, you need to make sure it must contain the `uid` property. You can pass only the `uid` too: `removeNotification(uid)`.
+
+
+### `editNotification(notification)`
+
+Edit a notification programmatically. You can pass an object previously returned by `addNotification()` or by `onAdd()` callback. If passing an object, you need to make sure it must contain the `uid` property. You can pass only the `uid` too: `editNotification(uid)`.
+
+
+### `clearNotifications()`
+
+Removes ALL notifications programatically.
 
 ## Creating a notification
 
@@ -97,7 +107,7 @@ The notification object has the following properties:
 | level        | string          | null      | Level of the notification. Available: **success**, **error**, **warning** and **info**                                                                                    |
 | position     | string          | tr        | Position of the notification. Available: **tr (top right)**, **tl (top left)**, **tc (top center)**, **br (bottom right)**, **bl (bottom left)**, **bc (bottom center)**  |
 | autoDismiss  | integer         | 5         | Delay in seconds for the notification go away. Set this to **0** to not auto-dismiss the notification                                                                      |
-| dismissible  | bool            | true      | Set if notification is dismissible by the user. [See more](#dismissible)                                                                                                  |
+| dismissible  | string          | both      | Settings controlling how the user can dismiss the notification and whether the dismiss button is visible. Available: **both (The disable button is visible and the user can click anywhere on the notification to dismiss)**, **click (The disable button is NOT visible and the user can click anywhere on the notification to dismiss)**, **button (The user can click on the disable button to dismiss the notifiction)**, **none (None [See more](#dismissible))**                                                                                                  |
 | action       | object          | null      | Add a button with label and callback function (callback is optional). [See more](#action)                                                                                                        |
 | children       | element,string          | null      | Adds custom content, and overrides `action` (if defined) [See more](#children)                                                                                                        |
 | onAdd | function | null | A callback function that will be called when the notification is successfully added. The first argument is the original notification e.g. `function (notification) { console.log(notification.title + 'was added'); }` |
@@ -107,7 +117,7 @@ The notification object has the following properties:
 
 ### Dismissible
 
-If set to false, the notification will not display the dismiss ('x') button and will only be dismissible programmatically or after autoDismiss timeout. [See more](#removenotificationnotification)
+If set to 'none', the button will only be dismissible programmatically or after autoDismiss timeout. [See more](#removenotificationnotification)
 
 ### Action
 
@@ -200,11 +210,14 @@ Here is the notification HTML:
 
 #### Important
 
-Using this method you have to take care of **every style**, since containers positions and the animations. To control animations, use the classes `notification-visible` and `notification-hidden`. If your CSS styles will not handle any animation (transition), you need to set the prop `noAnimation` to `true` when adding the Notification System component:
+Using this method you have to take care of **every style**, from containers positions to animations. To control animations, use the classes `notification-visible` and `notification-hidden`. If your CSS styles will not handle any animation (transition), you need to set the prop `noAnimation` to `true` when adding the Notification System component:
 
 ```js
 <NotificationSystem ref="notificationSystem" noAnimation={true} />
 ```
+
+See [#74](https://github.com/igorprado/react-notification-system/issues/74) for more details.
+
 ## Roadmap
 
 * Improve tests and coverage

@@ -1,5 +1,35 @@
 # CHANGELOG
 
+## 0.2.17 - Feb 21, 2018
+
+* Dismissible enhancements (thanks to @thepeted)
+
+## 0.2.16 - Oct 19, 2017
+
+* Support for React 16 (thanks to @marudor)
+
+## 0.2.15 - Aug 1, 2017
+
+* UMD build now specifies the library name (thanks to @franckamayou)
+
+## 0.2.14 - May 3, 2017
+
+* Ability to [edit notifications](https://github.com/igorprado/react-notification-system#removenotificationnotification). (thanks to @syndbg)
+* Removed deprecation warning. Now using `prop-types` and `create-react-class`packages. (thanks to @andrewBalekha)
+* Fix calling `onRemove` before updating the notifications state. (thanks to @szdc)
+
+## 0.2.13 - Mar 14, 2017
+
+* UMD support. (thanks to @jochenberger)
+
+## 0.2.12 - Mar 01, 2017
+
+* Adds support for enter and exit animations for NotificationItem. (thanks to @OriR)
+
+## 0.2.11 - Dec 06, 2016
+
+* Added `clearNotifications()` method (thanks to @saaqibz)
+
 ## 0.2.10 - Aug 29, 2016
 
 * Allows children content to override `action`. (thanks to @gor181)
