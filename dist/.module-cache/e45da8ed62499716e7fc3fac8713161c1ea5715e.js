@@ -1,4 +1,6 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
+var PropTypes = require('prop-types');
 var ReactDOM = require('react-dom');
 var Constants = require('./constants');
 var Helpers = require('./helpers');
@@ -24,17 +26,16 @@ var whichTransitionEvent = function() {
   return transition;
 };
 
-var NotificationItem = React.createClass({displayName: "NotificationItem",
-
+var NotificationItem = createReactClass({
   propTypes: {
-    notification: React.PropTypes.object,
-    getStyles: React.PropTypes.object,
-    onRemove: React.PropTypes.func,
-    allowHTML: React.PropTypes.bool,
-    noAnimation: React.PropTypes.bool,
-    children: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.element
+    notification: PropTypes.object,
+    getStyles: PropTypes.object,
+    onRemove: PropTypes.func,
+    allowHTML: PropTypes.bool,
+    noAnimation: PropTypes.bool,
+    children: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.element
     ])
   },
 
@@ -48,7 +49,7 @@ var NotificationItem = React.createClass({displayName: "NotificationItem",
 
   getInitialState: function() {
     return {
-      visible: false,
+      visible: undefined,
       removed: false
     };
   },
@@ -56,6 +57,7 @@ var NotificationItem = React.createClass({displayName: "NotificationItem",
   componentWillMount: function() {
     var getStyles = this.props.getStyles;
     var level = this.props.notification.level;
+    var dismissible = this.props.notification.dismissible;
 
     this._noAnimation = this.props.noAnimation;
 
@@ -68,7 +70,7 @@ var NotificationItem = React.createClass({displayName: "NotificationItem",
       action: getStyles.byElement('action')(level)
     };
 
-    if (!this.props.notification.dismissible) {
+    if (!dismissible || dismissible === 'none' || dismissible === 'button') {
       this._styles.notification.cursor = 'default';
     }
   },
@@ -179,7 +181,7 @@ var NotificationItem = React.createClass({displayName: "NotificationItem",
   _onTransitionEnd: function() {
     if (this._removeCount > 0) return;
     if (this.state.removed) {
-      this._removeCount++;
+      this._removeCount += 1;
       this._removeNotification();
     }
   },
@@ -227,6 +229,13 @@ var NotificationItem = React.createClass({displayName: "NotificationItem",
     }
   },
 
+  _handleNotificationClick: function() {
+    var dismissible = this.props.notification.dismissible;
+    if (dismissible === 'both' || dismissible === 'click' || dismissible === true) {
+      this._dismiss();
+    }
+  },
+
   componentWillUnmount: function() {
     var element = ReactDOM.findDOMNode(this);
     var transitionEvent = whichTransitionEvent();
@@ -250,11 +259,11 @@ var NotificationItem = React.createClass({displayName: "NotificationItem",
 
     if (this.state.visible) {
       className += ' notification-visible';
-    } else {
+    } else if (this.state.visible === false) {
       className += ' notification-hidden';
     }
 
-    if (!notification.dismissible) {
+    if (notification.dismissible === 'none') {
       className += ' notification-not-dismissible';
     }
 
@@ -293,9 +302,8 @@ var NotificationItem = React.createClass({displayName: "NotificationItem",
         );
       }
     }
-
-    if (notification.dismissible) {
-      dismiss = React.createElement("span", {className: "notification-dismiss", style:  this._styles.dismiss}, "×");
+    if (notification.dismissible === 'both' || notification.dismissible === 'button' || notification.dismissible === true) {
+      dismiss = React.createElement("span", {className: "notification-dismiss", onClick:  this._dismiss, style:  this._styles.dismiss}, "×");
     }
 
     if (notification.action) {
@@ -304,7 +312,7 @@ var NotificationItem = React.createClass({displayName: "NotificationItem",
           React.createElement("button", {className: "notification-action-button", 
             onClick:  this._defaultAction, 
             style:  this._styles.action}, 
-               notification.action.label
+             notification.action.label
           )
         )
       );
@@ -315,7 +323,7 @@ var NotificationItem = React.createClass({displayName: "NotificationItem",
     }
 
     return (
-      React.createElement("div", {className:  className, onClick:  this._dismiss, onMouseEnter:  this._handleMouseEnter, onMouseLeave:  this._handleMouseLeave, style:  notificationStyle }, 
+      React.createElement("div", {className:  className, onClick:  this._handleNotificationClick, onMouseEnter:  this._handleMouseEnter, onMouseLeave:  this._handleMouseLeave, style:  notificationStyle }, 
          title, 
          message, 
          dismiss, 
